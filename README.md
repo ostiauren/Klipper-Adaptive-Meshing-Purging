@@ -141,7 +141,7 @@ The cleanest and easiest way to get started with KAMP is to use Moonraker's Upda
     * `mesh_margin:` This is the amount of space in millimeters **beyond** your print area to further increase the size of the adapted mesh. Rather than a mesh starting at `X50 Y50`, if `Mesh_Margin` is set to `10`, the mesh will be stretched, and the new mesh bounds will start at `X40 Y40` instead. This can be useful for those who commonly use brims when printing. By default, this value is 0.
 
     * `fuzz_amount:` This is the **maximum** amount that the mesh bounds can be increased in millimeters *by random*. This setting is really only intended for those who use a nozzle-based probe like a strain gauge or Voron Tap. This will slightly randomize the bounds of the bed mesh which will help to spread out wear on your print surface when printing multiples of the same print job (several plates of similar size). By default, this value is 0. **Maximum** `fuzz_amount` recommended is `3`.
-    * `probe_count_min:` / `probe_count_max:` The number of probe points **per axis** for an adaptive mesh. KAMP scales the probe count with the area of the adapted mesh: a print covering the whole bed gets `probe_count_max`, a tiny print gets `probe_count_min`, and the *total* number of probes grows in proportion to the area in between, so the spacing between probes stays close to the full-bed spacing (with min 3 and max 11, a print covering half the bed's width gets 6 probes per axis). X and Y are scaled separately. Both must be odd numbers (so there is always a center probe); even values are adjusted by one. `probe_count_max` can never exceed the `probe_count` in your `[bed_mesh]` section, which stays the hard ceiling. When the larger axis needs more than 6 points KAMP switches to the bicubic algorithm, which needs at least 5 points per axis. By default `3` and `11`.
+    * `probe_count_min:` / `probe_count_max:` The number of probe points **per axis** for an adaptive mesh. A print covering the whole bed gets `probe_count_max`, a tiny print gets `probe_count_min`, and the *total* number of probes grows in proportion to the area in between, so the spacing between probes stays close to the full-bed spacing (with min 3 and max 11, a print covering half the bed's width gets 6 probes per axis). X and Y are scaled separately. `probe_count_max: 0` (the default) means "use the `probe_count` from `[bed_mesh]`", which is also the hard ceiling: a higher value is capped, and KAMP says so in the console. Both numbers must be odd (so there is always a center probe); an even value is lowered by one. When the larger axis needs more than 6 points KAMP switches to the bicubic algorithm, which needs at least 5 points per axis. The full formula and examples are in the header of `Adaptive_Meshing.cfg`. By default `3` and `0`.
 
 <br>
 
@@ -236,5 +236,7 @@ KAMP was not a one man effort, it was made possible with help from fine folks su
 
 ---
 
-
-
+## Differences from upstream (this `custom` branch)
+Forked from [kyleisah/Klipper-Adaptive-Meshing-Purging](https://github.com/kyleisah/Klipper-Adaptive-Meshing-Purging) and kept on the `custom` branch.
+* **Adaptive probe count scales with the mesh area.** Two new settings, `probe_count_min` and `probe_count_max` in `KAMP_Settings.cfg`, replace the fixed limits of upstream. The per-axis count is `sqrt(min² + (max² - min²) × fraction²)`, where `fraction` is the share of the bed the print covers, so the total number of probes follows the area. See the header of `Configuration/Adaptive_Meshing.cfg` for details and examples.
+* **One source of truth for the maximum.** `probe_count_max: 0` uses the `[bed_mesh]` `probe_count`, which stays the hard ceiling. The console warns when a higher `probe_count_max` is capped.
