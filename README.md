@@ -141,6 +141,7 @@ The cleanest and easiest way to get started with KAMP is to use Moonraker's Upda
     * `mesh_margin:` This is the amount of space in millimeters **beyond** your print area to further increase the size of the adapted mesh. Rather than a mesh starting at `X50 Y50`, if `Mesh_Margin` is set to `10`, the mesh will be stretched, and the new mesh bounds will start at `X40 Y40` instead. This can be useful for those who commonly use brims when printing. By default, this value is 0.
 
     * `fuzz_amount:` This is the **maximum** amount that the mesh bounds can be increased in millimeters *by random*. This setting is really only intended for those who use a nozzle-based probe like a strain gauge or Voron Tap. This will slightly randomize the bounds of the bed mesh which will help to spread out wear on your print surface when printing multiples of the same print job (several plates of similar size). By default, this value is 0. **Maximum** `fuzz_amount` recommended is `3`.
+    * `probe_count_min:` / `probe_count_max:` The minimum and maximum number of probe points **per axis** for an adaptive mesh. KAMP scales the probe count for each axis to the size of the adapted mesh area, so a small print gets a small mesh and a bed-sized print gets a dense one. Both must be odd numbers (so there is always a center probe); even values are adjusted by one. `probe_count_max` can never exceed the `probe_count` in your `[bed_mesh]` section, which stays the hard ceiling. By default `3` and `11`.
 
 <br>
 
